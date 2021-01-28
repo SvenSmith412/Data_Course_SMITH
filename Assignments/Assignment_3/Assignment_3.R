@@ -50,26 +50,40 @@ data("iris") # load it like this
 
 
 dat <- iris # can rename the object to be easier to type if you want
+identical(dat,iris)
 
 # ways to get a peek at our data set
 names(dat)
 dim(dat)
 head(dat)
+head(dat,n=4)
+?head
+tail(dat)
 
 # You can access specific columns of a "data frame" by name using '$'
 dat$Species
 dat$Sepal.Length
+dim(dat$Sepal.Length)
+dim(dat)
+length(dat$Sepal.Length)
+dat$Sepal.Length * dat$Sepal.Width
+
+Sepal.Area <- dat$Sepal.Length * dat$Sepal.Width
+dat$Sepal.Area <- Sepal.Area
+dat$NEWCOLUMN <- [1:150]
 
 # You can also use square brackets to get specific 1-D or 2-D subsets of a data frame (rows and/or columns)
 dat[1,1] # [Rows, Columns]
 dat[1:3,5]
+dat[1:3,c(1,5)]
 
 # Plotting ####
 
 # Can make a quick plot....just give vectors for x and y axes
+?plot
 plot(x=dat$Petal.Length, y=dat$Sepal.Length)
 plot(x=dat$Species, y=dat$Sepal.Length)
-
+plot(x=dat$Petal.Length[1:50], y=dat$Sepal.Length[1:50])
 
 # Object "Classes" ####
 
@@ -92,6 +106,7 @@ class(nums) # make sure it's numeric
 as.factor(nums) # show in console
 nums_factor <- as.factor(nums) #assign it to a new object as a factor
 class(nums_factor) # check it
+as.character(1:10)+1
 
 #check it out
 plot(nums) 
@@ -116,9 +131,9 @@ dev.off()
 # LET'S LEARN HOW TO MAKE A DATA FRAME FROM SCRATCH... WE JUST FEED IT VECTORS WITH NAMES!
 
 # make some vectors *of equal length* (or you can pull these from existing vectors)
-col1 = c("hat", "tie", "shoes", "bandana")
-col2 = c(1,2,3,4)
-col3 = factor(c(1,2,3,4)) # see how we can designate something as a factor             
+col1 <- c("hat", "tie", "shoes", "bandana")
+col2 <- c(1,2,3,4)
+col3 <- factor(c(1,2,3,4)) # see how we can designate something as a factor             
 
 # here's the data frame command:
 data.frame(Clothes = col1, Numbers = col2, Factor_numbers = col3) # colname = vector, colname = vector....
@@ -145,7 +160,6 @@ df1 # look at it...note column names are what we gave it.
 
 
 
-
 ### for-loops in R ####
 
 #simplest example:
@@ -168,13 +182,30 @@ for(i in levels(dat$Species)){
 # YOUR REMAINING HOMEWORK ASSIGNMENT (Fill in with code) ####
 
 # 1.  Make a scatterplot of Sepal.Length vs Sepal.Width. See if you can get the points to be colored by "Species"
-
+plot(x=dat$Sepal.Length, y=dat$Sepal.Width, col=dat$Species)
 
 # 2.  Write the code to save it (with meaningful labels) as a jpeg file
+jpeg("./Sepal_vs_Petal.jpg")
+plot(x=dat$Sepal.Length,
+     y=dat$Petal.Length,
+     col=dat$Species,
+     main = "My Title", 
+     xlab = "My axis label", 
+     ylab = "My other axis label")
+dev.off()
 
+# with title and axis labels
+jpeg("./Sepal_vs_Petal.jpg")
+plot(x=dat$Sepal.Length,
+     y=dat$Petal.Length,
+     col=dat$Species,
+     main = "Sepal Length vs Petal Length", 
+     xlab = "Sepal Length", 
+     ylab = "Petal Length")
+dev.off()
 
 # 3.  Subset the Iris data set to only include rows from the setosa and virginica Species
-
+dat[c(1:50,101:150),c(1:5)]
 
 # 4.  Write code to save this new subset as a .csv file called setosa_and_virginica.csv
 
