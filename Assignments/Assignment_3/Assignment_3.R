@@ -147,8 +147,8 @@ df1 # look at it...note column names are what we gave it.
 
 # Make a data frame from the first 20 rows of iris that has only Species and Sepal.Length columns
 # save it into an object called "dat3"
-
-
+data("iris")
+iris[1:20,c("Species","Sepal.Length")]
 
 
 
@@ -177,7 +177,39 @@ for(i in levels(dat$Species)){
   print(mean(dat[dat$Species == i,"Sepal.Length"]))
 }
 
+getwd()
 
+"A" %in% c("A","B","C")
+c("A","D") %in% c("A","B","C")
+1:10 > 5
+iris$Species == "setosa"
+therowsiwant <- iris$Species %in% c("setosa","virginica")
+
+iris[rows,columns]
+iris[therowsiwant,] #blank means "ALL" rows or columns
+iris[iris$Species %in% c("setosa","virginica"),]
+
+
+iris[iris$Species == "virginica",]
+
+#sepal length >5
+iris[iris$Sepal.Length >5,]
+myrows <- iris$Sepal.Length>5
+iris[myrows,]
+dim(iris[myrows,])
+
+myrows <- iris$Sepal.Length>=6
+dim(iris[myrows,])
+
+my_iris <- iris[myrows,]
+table(my_iris$Species)
+table(iris$Species)
+
+iris[iris$Species,] != "versicolor"
+
+new_iris <- iris[therowsiwant,]
+write.csv(new_iris, "./setosa_andvirginica.csv")
+write.csv(x=new_iris,file="./setosa_andvirginica.csv")
 
 # YOUR REMAINING HOMEWORK ASSIGNMENT (Fill in with code) ####
 
@@ -185,6 +217,7 @@ for(i in levels(dat$Species)){
 plot(x=dat$Sepal.Length, y=dat$Sepal.Width, col=dat$Species)
 
 # 2.  Write the code to save it (with meaningful labels) as a jpeg file
+#In-class example:
 jpeg("./Sepal_vs_Petal.jpg")
 plot(x=dat$Sepal.Length,
      y=dat$Petal.Length,
@@ -194,10 +227,10 @@ plot(x=dat$Sepal.Length,
      ylab = "My other axis label")
 dev.off()
 
-# with title and axis labels
-jpeg("./Sepal_vs_Petal.jpg")
+# Following the instructions of sepal width vs sepal length and with title and axis labels
+jpeg("./Sepal_Length_vs_Width.jpg")
 plot(x=dat$Sepal.Length,
-     y=dat$Petal.Length,
+     y=dat$Sepal.Width,
      col=dat$Species,
      main = "Sepal Length vs Petal Length", 
      xlab = "Sepal Length", 
@@ -205,10 +238,21 @@ plot(x=dat$Sepal.Length,
 dev.off()
 
 # 3.  Subset the Iris data set to only include rows from the setosa and virginica Species
-dat[c(1:50,101:150),c(1:5)]
+setosa_and_virginica <- dat[c(1:50,101:150),c(1:5)] #initial attempt "Fragile"
+
+therowsiwant <- iris$Species %in% c("setosa","virginica")
+
+iris[rows,columns]
+iris[therowsiwant,] #blank means "ALL" rows or columns
+
+
+
+#CTRL-ALT-B runs everycode before
+iris$Species == "setosa"
 
 # 4.  Write code to save this new subset as a .csv file called setosa_and_virginica.csv
-
+df <- data.frame(setosa_and_virginica)
+write.csv(setosa_and_virginica,"./setosa_and_virginica.csv", row.names = TRUE)
 
 # 5.  Upload this R script (with all answers filled in and tasks completed) to canvas and GitHub
       # I should be able to run your R script and get all the plots created and saved, etc.
