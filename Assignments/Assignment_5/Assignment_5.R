@@ -10,6 +10,7 @@ library(colorblindr)
 
 # Load the first data set we will work with (built-in to ggplot)
 data("midwest", package = "ggplot2")
+midwest
 
 # Intro to ggplot syntax
 
@@ -49,12 +50,22 @@ ggplot(midwest, aes(x=area, y=poptotal)) + geom_point() # The "+" tells ggplot t
 ggplot(midwest, aes(x=area, y=poptotal)) + geom_point() + geom_smooth(method = "lm")
 # The line of best fit is in blue. Can you find out what other method options are available for geom_smooth? 
 
+ggplot(midwest, aes(x=area, y=poptotal)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+# Another way to build it
+
 # Store your plot as an object to add to...
 p <- ggplot(midwest, aes(x=area, y=poptotal)) + geom_point() + geom_smooth(method = "lm")
+
+p
+# can now plot it
 
 # Zoom in
 p + lims(x=c(0,0.1),y=c(0,1000000)) # what did this do?
 p + coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) # how is this different?
+
+p + coord_cartesian(xlim=c(0,0.5), ylim=c(0, 10000))
 
 # Store this new zoomed-in plot
 p2 <- p + coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000))
@@ -97,11 +108,12 @@ p3
 # Don't like those colors?
 p3 + scale_color_brewer(palette = "Set1")
 
+p3 + scale_colour_viridis_d()
 # Want more color choices? You can check them out in the RColorBrewer package, or even make your own
 brewer.pal.info
 
 # Make your own and take a peek at it:
-pal = c("#c4a113","#c1593c","#643d91","#820616","#477887","#688e52",
+pal <- c("#c4a113","#c1593c","#643d91","#820616","#477887","#688e52",
         "#12aa91","#705f36","#8997b2","#753c2b","#3c3e44","#b3bf2d",
         "#82b2a4","#894e7d","#a17fc1","#262a8e","#abb5b5","#000000")
 palette_plot(pal)
@@ -116,6 +128,8 @@ p3 + scale_x_reverse()
 p3 + theme_minimal()
 p3 + theme_dark()
 
+p3 + theme_void()
+p3 + theme_light()
 
 # You can also transform your data right in ggplot:
 p4 = ggplot(midwest, aes(x=area/max(midwest$area), y=log10(poptotal))) + 
@@ -134,9 +148,11 @@ p4 + facet_wrap(~ state)
 p4 + facet_wrap(~ state, scales = "free") + theme(legend.position = "none")
 p4 + facet_wrap(~ state) + theme(legend.position = "none", strip.text.x = element_text(size = 12, face="bold"))
 p4 + facet_wrap(~ state) + theme(legend.position = "none", 
-                                 strip.text.x = element_text(size = 12, face="bold"),
-                                 strip.background = element_rect(fill = "lightblue"))
-
+            strip.text.x = element_text(size = 12, face="bold"),
+            strip.background = element_rect(fill = "lightblue"))
+theme()
+#theme('then hit tab to view them')
+p4 + theme(axis.title.y = element_text(size = 50, angle=10,vjust=0 ))
 
 # Some other "geom" types ... for categorical x axis
 p5 = ggplot(midwest, aes(x=state,y=percollege, fill=state)) + labs(x="State",y="Percent with college degree")
@@ -146,6 +162,9 @@ p5 + geom_boxplot()
 p5 + geom_violin()
 p5 + geom_bar(stat="identity") # something wrong with this picture!
 
+p5 + geom_bar(stat="identity") +
+  geom_errorbar()
+geom_
 
 # Geoms for looking at a single variable's distribution:
 data("MplsStops")
@@ -217,7 +236,92 @@ ggplot(random_data, aes(x=x, y=y) ) +
   geom_bin2d() +
   theme_bw()
 
+data("iris")
+df1 <- iris
+
+ggplot(iris)
+
+ggplot(iris, aes(x=iris$Sepal.Length - mean(iris$Sepal.Length), color=iris$Species))
+
+ggplot(iris, aes(x=Sepal.Length - mean(Sepal.Length),color=Species))
+mean(iris$Sepal.Length)
+iris$Sepal.Length - mean(iris$Sepal.Length)
+
+?read.csv()
+read.csv2()
+
+iris
+
+install.packages("ggthemes")
+library(ggthemes)
+
+iris
+library(tidyverse)
+
+#Graph 1
+ggplot(iris, aes(x=Sepal.Length,y=Petal.Length,col=Species)) +  geom_point() +
+  geom_smooth(method="lm") + theme_minimal() +
+  labs(x="Sepal.Length",y="Petal.Length",title = "Sepal length vs petal length",subtitle = "for three iris species")
+
+png(filename = "./Sepal_Length_vs_Petal_Length.png")
+ggplot(iris, aes(x=Sepal.Length,y=Petal.Length,col=Species)) +  geom_point() +
+  geom_smooth(method="lm") + theme_minimal() +
+  labs(x="Sepal.Length",y="Petal.Length",title = "Sepal length vs petal length",subtitle = "for three iris species")
+dev.off()
+
+d2 <- density(iris[c(1:150),c(4)])
+
+#Graph 2
+ggplot(iris, aes(x=Petal.Width,fill=Species)) +  geom_density(alpha=.5) +
+  theme_minimal() + 
+  labs(x="Petal Width",y="density",title = "Distribution of Petal Width",subtitle = "for three iris species")
+
+png(filename = "./Distribution_of_Petal_Widths.png")
+ggplot(iris, aes(x=Petal.Width,fill=Species)) +  geom_density(alpha=.5) +
+  theme_minimal() + 
+  labs(x="Petal Width",y="density",title = "Distribution of Petal Width",subtitle = "for three iris species")
+dev.off()
+
+
+pw <- iris[c(1:150),c(4)]
+iris$Sepal.Width/iris$Petal.Width
+sw_pw <- iris$Sepal.Width/iris$Petal.Width
+pw_sw <- iris$Petal.Width/iris$Sepal.Width #used this subset for graph 3
+
+#Graph 3
+ggplot(iris, aes(x=Species,y=pw_sw,fill=Species)) +  geom_boxplot() +
+  theme_minimal() + scale_color_brewer() +
+    labs(x="Species",y="Ratio of Sepal Width to Petal Width",title = "Sepal- to Petal-Width Ratio",subtitle = "for three iris species")
+
+# A way to keep it within the graph (not using a subset)
+png(filename = "./Sepal-to_Petal-Width_Ratio.png")
+ggplot(iris, aes(x=Species,y=Petal.Width/Sepal.Width,fill=Species)) +  geom_boxplot() +
+  theme_minimal() +
+  labs(x="Species",y="Ratio of Sepal Width to Petal Width",title = "Sepal- to Petal-Width Ratio",subtitle = "for three iris species")
+dev.off()
 
 
 
+#Graph #4
 
+iris$Deviance <- iris$Sepal.Length  -mean(iris$Sepal.Length)
+iris[sort(iris$Deviance),]
+sort(iris$Deviance)
+order(iris$Deviance)
+iris[order(iris$Deviance),]
+
+iris2 <- iris[order(iris$Deviance),]
+
+ggplot(iris2, aes(x=1:150,y=Sepal.Length -mean(iris$Sepal.Length),fill=Species, width=0.9)) +
+         geom_bar(stat="identity") + coord_flip() + theme_minimal()
+  labs(x="",y="Deviance from the mean",title = "Sepal length deviance from the mean of all observations",
+       caption="Note: Deviance = Sepal.Length -mean(Seapl.Length)") +
+    theme(axis.text.y=element_blank())
+
+png(filename = "./Sepal_length_deviance_from_the_mean_of_all_observations.png")    
+ggplot(iris2, aes(x=1:150,y=Sepal.Length -mean(iris$Sepal.Length),fill=Species, width=0.9)) +
+  geom_bar(stat="identity") + coord_flip() + theme_minimal()
+labs(x="",y="Deviance from the mean",title = "Sepal length deviance from the mean of all observations",
+     caption="Note: Deviance = Sepal.Length -mean(Seapl.Length)") +
+  theme(axis.text.y=element_blank())
+dev.off()
