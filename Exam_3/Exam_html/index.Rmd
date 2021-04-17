@@ -1,0 +1,103 @@
+---
+title: "Skills_Test_3_html"
+author: "Steven Smith"
+date: "4/12/2021"
+output: html_document
+---
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(janitor)
+library(patchwork)
+library(tidyverse)
+library(readxl)
+library(tidyr)
+library(ggplot2)
+library(MASS)
+library(skimr)
+library(broom)
+library(GGally)
+library(modelr)
+library(fitdistrplus)
+library(plotly)
+library(dplyr)
+
+```
+
+<style type="text/css">
+.main-container {
+  max-width:1800px;
+  margin-left: auto;
+  margin-right; auto;
+}
+</style>
+
+<style>
+div.gray { background-color:#aabdaf; border-radius: Spx; padding: 20px;}
+</style>
+<div class = "gray">
+
+### Faculty Salaries
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+df1 <- read.csv("Exam_3/FacultySalaries_1995.csv")
+
+df1b <- df1 %>% 
+  select(FedID, UnivName, State, Tier, contains("Salary")) %>% 
+  select(-contains("All")) %>% 
+  pivot_longer(starts_with("Avg"),names_to = "Rank", values_to = "Salary") %>% 
+  mutate(Rank = Rank %>% str_remove_all("Avg")) %>% 
+  mutate(Rank = Rank %>% str_remove_all("ProfSalary")) %>% 
+  filter(Tier != "VIIB") +
+  ggplot(df1b,aes(x=Rank,y=Salary,fill=Rank)) +
+  geom_boxplot() +
+  facet_wrap(~Tier) +
+  theme_minimal() +
+  theme(axis.text.x=element_text(angle =60,hjust = 1 ))
+mod1a <- aov(data = df1b,
+             formula = Salary ~ State + Tier + Rank)
+
+tidy(mod1a)
+```
+___
+### Juniper Data
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+read.csv("Juniper_Oils.csv")
+
+df2 <- read.csv("Juniper_Oils.csv")
+
+names(df2) <- names(df2) %>% make_clean_names()
+
+
+df2 <- df2 %>% 
+  pivot_longer(cols=c("alpha_pinene","para_cymene","alpha_terpineol",
+                      "cedr_9_ene","alpha_cedrene","beta_cedrene","cis_thujopsene",
+                      "alpha_himachalene","beta_chamigrene","cuparene","compound_1",
+                      "alpha_chamigrene","widdrol","cedrol","beta_acorenol","alpha_acorenol",
+                      "gamma_eudesmol","beta_eudesmol","alpha_eudesmol","cedr_8_en_13_ol",
+                      "cedr_8_en_15_ol","compound_2","thujopsenal"),
+               names_to="compounds",
+               values_to="mass_spec_OD")
+
+ggplot(df2,aes(x=years_since_burn, y=mass_spec_OD,color=df$ProfType)) +
+  geom_point(alpha=.001) + facet_wrap(~compounds,scales = "free_y") + geom_smooth() + 
+  theme_minimal() +
+  labs(x="YearsSinceBurn",y="Concentration")
+
+mod2a <- glm(data = df2,
+            formula = mass_spec_OD ~ years_since_burn * compounds)
+mod2a
+
+tidy(mod2a)
+
+dfsig <- tidy(mod2a)
+
+dfsig
+
+```
+___
+
+### RDS trial
+```{r}
+plot1 <- readRDS("plot1.RDS")
+```
