@@ -105,9 +105,10 @@ mod2a <- glm(data = df2,
 mod2a
 
 dfsig <- tidy(mod2a)
-
 dfsig
 
-#alpha_cedrine shows a p-value < 0.0005, very significant
+summary(mod2a)
+
+#alpha_cedrine, cedr_8_en_ol, cis_thujopsene, and widdrol show statistical significance
 
 change
